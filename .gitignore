@@ -1,5 +1,5 @@
-.venv
 .env
-
-# Ignore the output markdown file
 output.md
+__pycache__/
+.venv/
+*.pyc

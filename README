@@ -1,0 +1,153 @@
+# 🤖 Multi-Agent Article Writer — CrewAI + Claude
+
+A multi-agent AI pipeline built with [CrewAI](https://www.crewai.com/) and Anthropic's Claude that autonomously plans, writes, and edits blog articles on any topic.
+
+Three specialised agents collaborate in sequence: a **Content Planner** researches the topic and builds an outline, a **Content Writer** drafts the article in markdown, and an **Editor** polishes it for publication.
+
+---
+
+## 🏗️ Architecture
+
+```
+Input: topic
+    │
+    ▼
+┌─────────────────┐
+│  Content Planner │  → Trend research, audience analysis, content outline
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Content Writer  │  → Full blog post in markdown
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│     Editor      │  → Proofread, brand alignment, final polish
+└─────────────────┘
+         │
+         ▼
+Output: polished markdown article
+```
+
+---
+
+## 🚀 Quickstart
+
+### 1. Clone the repo
+
+```bash
+git clone https://github.com/GarukaR/multi-agents-article-writing.git
+cd multi-agents-article-writing
+```
+
+### 2. Create and activate a virtual environment
+
+```bash
+python -m venv .venv
+
+# Windows
+.venv\Scripts\activate
+
+# macOS / Linux
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install crewai python-dotenv
+```
+
+### 4. Set up your API key
+
+Create a `.env` file in the project root:
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+> **Note:** Do not wrap the key in quotes.
+
+### 5. Run
+
+```bash
+python app.py
+```
+
+The finished article will be printed to the console. To save it as a file, see [Saving Output](#saving-output) below.
+
+---
+
+## ⚙️ Configuration
+
+| Parameter | Default | Description |
+|---|---|---|
+| `model` | `anthropic/claude-sonnet-4-6` | LLM used by all agents |
+| `max_tokens` | `8192` | Max tokens per agent response |
+| `topic` | `"Artificial Intelligence"` | Article topic (change in `app.py`) |
+
+To change the topic, edit the `kickoff` call at the bottom of `app.py`:
+
+```python
+result = crew.kickoff(inputs={"topic": "Your Topic Here"})
+```
+
+---
+
+## 💾 NOT Saving Output
+
+To not write the article to a markdown file, remove this after `crew.kickoff(...)`:
+
+```python
+with open("example_output.md", "w", encoding="utf-8") as f:
+    f.write(str(result))
+
+print("Article saved to example_output.md")
+```
+
+> `example_output.md` is committed as a demo. Add `output.md` to your `.gitignore` to keep personal runs out of version control.
+
+---
+
+## 📁 Project Structure
+
+```
+multi-agents-article-writing/
+├── app.py              # Main entry point — agents, tasks, crew definition
+├── .env                # API keys (not committed)
+├── .env.example        # Template for environment variables
+├── example_output.md   # Sample generated article
+├── output.md           # Your generated output (gitignored)
+└── README.md
+```
+
+---
+
+## 🔑 Requirements
+
+- Python 3.10 – 3.12 (3.13+ not yet supported by CrewAI)
+- An [Anthropic API key](https://console.anthropic.com/)
+- `crewai` and `python-dotenv` packages
+
+---
+
+## 🛠️ Troubleshooting
+
+**404 model not found**
+Make sure the model string includes the provider prefix: `anthropic/claude-sonnet-4-6`.
+
+**401 invalid API key / routed to OpenAI**
+CrewAI fell back to OpenAI because the model string had no provider prefix. Add `anthropic/` as shown above.
+
+**Key not loading**
+Run this to verify your `.env` is being picked up:
+```bash
+python -c "import os; from dotenv import load_dotenv; load_dotenv(); k = os.getenv('ANTHROPIC_API_KEY'); print(k[:15] + '...' if k else 'NOT FOUND')"
+```
+
+---
+
+## 📄 License
+
+MIT

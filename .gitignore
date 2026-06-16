@@ -1,0 +1,5 @@
+.venv
+.env
+
+# Ignore the output markdown file
+output.md

@@ -8,7 +8,6 @@ Three specialised agents collaborate in sequence: a **Content Planner** research
 
 ## 🏗️ Architecture
 
-```
 Input: topic
     │
     ▼
@@ -28,7 +27,6 @@ Input: topic
          │
          ▼
 Output: polished markdown article
-```
 
 ---
 
